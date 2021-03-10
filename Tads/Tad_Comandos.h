@@ -30,6 +30,7 @@ bool SeparaComando(char digitado[], char comando[],char res[]){
 			i++;
 			pos++;
 		}
+		res[i] = '\0';
 		return 1;
 	}	
 	return 0;	
@@ -40,7 +41,7 @@ void Compara_String(char comando[]){
 
 	char set[] = "SET DELETED";
 	char gt[] = "GOTO";
-	char locate[] = "LOCATE FOR NOME";
+	char locate[] = "LOCATE FOR";
 	char setdef[] = "SET DEFAULT TO";
 	char res[30], aux[30];
 	
@@ -52,9 +53,9 @@ void Compara_String(char comando[]){
 		printf("\nGOTO");
 	}
 	else if(SeparaComando(comando, locate, res)==1){	
-		replace(res, '=');
+		/*replace(res, '=');
 		replace(res, '\"');
-		replace(res, ' ');
+		replace(res, ' ');*/
 		puts(res);
 	}
 	else if(SeparaComando(comando, setdef, res)==1){
