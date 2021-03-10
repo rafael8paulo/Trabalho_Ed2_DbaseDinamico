@@ -9,7 +9,7 @@ void replace(char string[], char delimitador){
 		}
 		i++;
 	}
-	aux[i] = '\0';
+	aux[x] = '\0';
 	strcpy(string, aux);
 }
 bool SeparaComando(char digitado[], char comando[],char res[]){
