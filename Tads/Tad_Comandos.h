@@ -17,7 +17,7 @@ bool SeparaComando(char digitado[], char comando[],char res[]){
 	char aux[50];
 	int pos=0;
 	
-	while(digitado[pos] == comando[pos] && digitado[pos] != '\0' && comando[pos] != '\0'){
+	while(toupper(digitado[pos]) == toupper(comando[pos]) && digitado[pos] != '\0' && comando[pos] != '\0'){
 		aux[pos] = comando[pos];
 		pos++;
 	}
@@ -45,6 +45,7 @@ void Compara_String(char comando[]){
 	char res[30], aux[30];
 	
 	if(SeparaComando(comando, set, res)==1){
+		replace(res, ' ');
 		printf("\nSet: %s", res);
 	}
 	else if(SeparaComando(comando, gt, res)==1){
@@ -57,6 +58,7 @@ void Compara_String(char comando[]){
 		puts(res);
 	}
 	else if(SeparaComando(comando, setdef, res)==1){
+		replace(res, ' ');
 		printf("\nCriar Arquivo: %s", res);
 	}
 	else if(stricmp(comando,"LIST STRUCTURE")==0){
