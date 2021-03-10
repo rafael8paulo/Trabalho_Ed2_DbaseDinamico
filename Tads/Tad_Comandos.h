@@ -2,13 +2,14 @@ void replace(char string[], char delimitador){
 	int i=0, x=0;
 	char aux[strlen(string)];
 	
-	while(i<strlen(string)){
+	while(i<strlen(string) && string[i] != '\0'){
 		if(string[i] != delimitador){
 			aux[x] = string[i];
 			x++;
 		}
 		i++;
 	}
+	puts(string);
 	strcpy(string, aux);
 }
 
@@ -43,15 +44,16 @@ bool SeparaComando(char digitado[], char comando[],char res[]){
 		aux[pos] = comando[pos];
 		pos++;
 	}
-	
-	int i=0;
-	while(digitado[pos] != '\0'){
-		res[i] = digitado[pos];
-		i++; pos++;
-	}
 
-	if(stricmp(aux, comando)==0)
+	if(stricmp(aux, comando)==0){
+		int i=0;
+		while(pos < strlen(digitado) && digitado[pos] != '\0'){
+			res[i] = digitado[pos];
+			i++;
+			pos++;
+		}
 		return 1;
+	}	
 	return 0;	
 }
 
@@ -71,8 +73,8 @@ void Compara_String(char comando[]){
 		printf("\nGOTO");
 	}
 	else if(SeparaComando(comando, locate, res)==1){	
-		//replace(res, '=');
-		//replace(res, '\"');
+		replace(res, '=');
+		replace(res, '\"');
 		puts(res);
 	}
 	else if(SeparaComando(comando, setdef, res)==1){
@@ -110,8 +112,5 @@ void Compara_String(char comando[]){
 	}
 	else{
 		printf("\n comando invalido");
-	}
-		
-	//teste
-	
+	}	
 }
