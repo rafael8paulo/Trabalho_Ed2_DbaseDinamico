@@ -1,50 +1,28 @@
 void replace(char string[], char delimitador){
 	int i=0, x=0;
-	char aux[strlen(string)];
+	char aux[strlen(string)+1];
 	
-	while(i<strlen(string) && string[i] != '\0'){
+	while(i< strlen(string) && string[i] != '\0'){
 		if(string[i] != delimitador){
 			aux[x] = string[i];
 			x++;
 		}
 		i++;
 	}
-	puts(string);
+	aux[i] = '\0';
 	strcpy(string, aux);
 }
-
-/*//Separa a string pelo comando e o atributo dele 
-void ProcuraString(char digitado[], char comand[], char res[]){
-	
-	int pos=0, lenC = strlen(comand), lenDig = strlen(digitado);
-	char aux[strlen(comand)];
-	
-	while(digitado[pos] == comand[pos]){
-		aux[pos] = comand[pos];
-		pos++;
-	}
-
-	if(stricmp(aux, comand)==0){
-		int i=0;
-		while(pos < lenC && digitado[pos] != '\0'){
-			res[i] = digitado[pos];
-			i++;
-			pos++;
-		}
-		strcpy(digitado, aux);
-	}
-}*/
 bool SeparaComando(char digitado[], char comando[],char res[]){
 	
-	char aux[strlen(comando)];
-	res[0] = '\0';
+	char aux[50];
 	int pos=0;
 	
-	while(digitado[pos] == comando[pos]){
+	while(digitado[pos] == comando[pos] && digitado[pos] != '\0' && comando[pos] != '\0'){
 		aux[pos] = comando[pos];
 		pos++;
 	}
-
+	aux[pos] = '\0';
+	
 	if(stricmp(aux, comando)==0){
 		int i=0;
 		while(pos < strlen(digitado) && digitado[pos] != '\0'){
@@ -75,6 +53,7 @@ void Compara_String(char comando[]){
 	else if(SeparaComando(comando, locate, res)==1){	
 		replace(res, '=');
 		replace(res, '\"');
+		replace(res, ' ');
 		puts(res);
 	}
 	else if(SeparaComando(comando, setdef, res)==1){
