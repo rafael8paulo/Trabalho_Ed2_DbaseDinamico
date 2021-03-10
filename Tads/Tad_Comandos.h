@@ -25,7 +25,7 @@ bool SeparaComando(char digitado[], char comando[],char res[]){
 	
 	if(stricmp(aux, comando)==0){
 		int i=0;
-		while(pos < strlen(digitado) && digitado[pos] != '\0'){
+		while(digitado[pos] != '\0'){
 			res[i] = digitado[pos];
 			i++;
 			pos++;

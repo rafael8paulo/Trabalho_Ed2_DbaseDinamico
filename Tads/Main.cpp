@@ -7,7 +7,7 @@
 
 int main(){
 	
-	char comando[50] = {"LOCATE FOR NOME = \"rafael\""};
+	char comando[50] = {"LOCATe FOR NOME = \"rafael\""};
 	//printf("# ");gets(comando);
 	
 	Compara_String(comando);
