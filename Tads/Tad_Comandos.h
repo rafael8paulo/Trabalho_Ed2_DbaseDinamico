@@ -112,5 +112,6 @@ void Compara_String(char comando[]){
 		printf("\n comando invalido");
 	}
 		
+	//teste
 	
 }
