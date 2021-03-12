@@ -12,10 +12,11 @@ void replace(char string[], char delimitador){
 	aux[x] = '\0';
 	strcpy(string, aux);
 }
-bool SeparaComando(char digitado[], char comando[],char res[]){
-	
+
+bool SeparaComando(char digitado[], char comando[], char res[])
+{
 	char aux[50];
-	int pos=0;
+	int pos = 0;
 	
 	while(toupper(digitado[pos]) == toupper(comando[pos]) && digitado[pos] != '\0' && comando[pos] != '\0'){
 		aux[pos] = comando[pos];
@@ -31,68 +32,167 @@ bool SeparaComando(char digitado[], char comando[],char res[]){
 			pos++;
 		}
 		res[i] = '\0';
-		return 1;
+		if(res[0] != '\0')
+			return 1;
 	}	
 	return 0;	
 }
 
-//Recebe a string e a trata para a função 
-void Compara_String(char comando[]){
+//field_param(comando, res);
+void field_param(char field[], char digitado[])
+{
+	int i = 0;
+	while(digitado[i] != '=' && digitado[i] != '\0')
+	{
+		field[i] = digitado[i];
+		digitado[i] = ' ';
+		i++;
+	}
+	field[i] = '\0';
+}
 
-	char set[] = "SET DELETED";
-	char gt[] = "GOTO";
-	char locate[] = "LOCATE FOR";
-	char setdef[] = "SET DEFAULT TO";
-	char res[30], aux[30];
+void trim (char comando[])
+{
+	int i = 0;
+	int x = 0;
+	int y = strlen(comando) - 1;
+	char aux[50];
 	
-	if(SeparaComando(comando, set, res)==1){
+	while(comando[x] == ' ')
+		x++;
+		
+	while(comando[y] == ' ')
+		y--;
+		
+	while(x <= y)
+		aux[i++] = comando[x++];
+		
+	aux[i] = '\0';
+	
+	strcpy(comando, aux);
+}
+//Recebe a string e a trata para a função 
+int Compara_String(char comando[], char field[])
+{
+	/* ISSUES
+	*verificar se atributo passado a uma funcao que faz uso da mesma, nao esta vazio
+	*
+	*/
+	
+	char create[] = "CREATE";
+	char setdef[] = "SET DEFAULT TO";
+	char use[] = "USE";
+	char locate[] = "LOCATE FOR";
+	char list_nome[] = "LIST FOR";
+	char gt[] = "GOTO";
+	
+	char res[50], aux[50];
+	trim(comando);
+	
+	if(SeparaComando(comando, setdef, res)) //Ok
+	{
 		replace(res, ' ');
-		printf("\nSet: %s", res);
+		replace(res, ':');
+		strcpy(comando, res);
+		return 1;
 	}
-	else if(SeparaComando(comando, gt, res)==1){
-		printf("\nGOTO");
+	
+	if(SeparaComando(comando, create, res)) //Ok
+	{
+		replace(res, ' ');
+		strcpy(comando, res);
+		return 2;
 	}
-	else if(SeparaComando(comando, locate, res)==1){	
-		/*replace(res, '=');
+	
+	if(!stricmp(comando, "DIR")) //Ok
+		return 3;
+		
+	if(!stricmp(comando, "QUIT")) //Ok
+		return 4;
+		
+	if(SeparaComando(comando, use, res)) //Ok
+	{
+		replace(res, ' ');
+		strcpy(comando, res);
+		return 5;
+	}
+	
+	if(!stricmp(comando, "LIST STRUCTURE")) //Ok
+		return 6;
+	
+	if(!stricmp(comando, "APPEND")) //Ok
+		return 7;
+	
+	if(!stricmp(comando, "LIST")) //Ok
+		return 8;
+	
+	if(!stricmp(comando, "CLEAR")) //Ok
+		return 9;
+	
+	if(SeparaComando(comando, locate, res)) //Ok
+	{
+		field_param(comando, res);
+		replace(res, '=');
 		replace(res, '\"');
-		replace(res, ' ');*/
-		puts(res);
+		strcpy(field, res);
+		trim(res);
+		trim(comando);
+		printf("\n|%s|%s|", res, comando);
+		return 10;
 	}
-	else if(SeparaComando(comando, setdef, res)==1){
+	
+	if(SeparaComando(comando, gt, res)) //Ok
+	{
 		replace(res, ' ');
-		printf("\nCriar Arquivo: %s", res);
+		strcpy(comando, res);
+		return 11;
 	}
-	else if(stricmp(comando,"LIST STRUCTURE")==0){
-		printf("\nLISTAR");	
+	
+	if(!stricmp(comando, "DISPLAY"))EDIT //Ok
+		return 12;
+	
+	if(!stricmp(comando, "EDIT")) //Ok
+		return 13;
+	
+	if(!stricmp(comando, "DELETE")) //Ok
+		return 14;
+	
+	if(!stricmp(comando, "RECALL")) //Ok
+		return 15;
+	
+	if(!stricmp(comando, "SET DELETED")) //Ok
+		return 16;
+	
+	if(!stricmp(comando, "PACK")) //Ok
+		return 17;
+	
+	if(!stricmp(comando, "ZAP")) //Ok
+		return 18;
+		
+		
+	if(SeparaComando(comando, list_nome, res)) //Ok
+	{
+		trim(res);
+		replace(res, '=');
+		replace(res, '\"');
+		field_param(comando, res);
+		trim(res);
+		strcpy(field, res);
+		return 19;
 	}
-	else if(stricmp(comando,"CREATE")==0){
-		printf("\nCriar Tabela");
-	}
-	else if(stricmp(comando,"DIR")==0){
-		printf("\nDIR");
-	}
-	else if(stricmp(comando,"USE")==0){
-		printf("\nUSE"); 
-	}
-	else if(stricmp(comando,"APPEND")==0){
-		printf("\nAPPEND");
-	}
-	else if(stricmp(comando,"LIS")==0){
-		printf("\nLIST");
-	}
-	else if(stricmp(comando,"DISPLAY")==0){
-		printf("\nDISPLAY");
-	}
-	else if(stricmp(comando,"EDIT")==0){
-		printf("\nEDIT");
-	}
-	else if(stricmp(comando,"DELETE")==0){
-		printf("\nDELETE");
-	}
-	else if(stricmp(comando,"RECALL")==0){
-		printf("\nRECALL");
-	}
-	else{
-		printf("\n comando invalido");
-	}	
+		
+	if(!stricmp(comando, "DELETE ALL")) //Ok
+		return 20;
+	
+	if(!stricmp(comando, "RECALL ALL")) //Ok
+		return 21;
+		
+	if(!stricmp(comando, "MODIFY STRUCTURE")) //Ok
+		return 22;
+	
+	if(!stricmp(comando, "SORT")) //Ok
+		return 23;
+
+
+	return 0; //Nenhuma das opcoes
 }
