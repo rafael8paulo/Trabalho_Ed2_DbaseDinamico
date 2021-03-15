@@ -71,7 +71,7 @@ void trim (char comando[])
 	
 	strcpy(comando, aux);
 }
-//Recebe a string e a trata para a função 
+//Recebe a string e a trata para a funï¿½ï¿½o 
 int Compara_String(char comando[], char field[])
 {
 	/* ISSUES
@@ -85,6 +85,7 @@ int Compara_String(char comando[], char field[])
 	char locate[] = "LOCATE FOR";
 	char list_nome[] = "LIST FOR";
 	char gt[] = "GOTO";
+	char setdel[] = "SET DELETED";
 	
 	char res[50], aux[50];
 	trim(comando);
@@ -137,18 +138,18 @@ int Compara_String(char comando[], char field[])
 		strcpy(field, res);
 		trim(res);
 		trim(comando);
-		printf("\n|%s|%s|", res, comando);
 		return 10;
 	}
 	
 	if(SeparaComando(comando, gt, res)) //Ok
 	{
 		replace(res, ' ');
-		strcpy(comando, res);
+		trim(res);
+		strcpy(field, res);
 		return 11;
 	}
 	
-	if(!stricmp(comando, "DISPLAY"))EDIT //Ok
+	if(!stricmp(comando, "DISPLAY"))//Ok
 		return 12;
 	
 	if(!stricmp(comando, "EDIT")) //Ok
@@ -160,8 +161,13 @@ int Compara_String(char comando[], char field[])
 	if(!stricmp(comando, "RECALL")) //Ok
 		return 15;
 	
-	if(!stricmp(comando, "SET DELETED")) //Ok
+	if(SeparaComando(comando, setdel, res)) //Ok
+	{
+		trim(res);
+		strcpy(field, res);
 		return 16;
+	}
+		
 	
 	if(!stricmp(comando, "PACK")) //Ok
 		return 17;
@@ -173,9 +179,9 @@ int Compara_String(char comando[], char field[])
 	if(SeparaComando(comando, list_nome, res)) //Ok
 	{
 		trim(res);
+		field_param(comando, res);
 		replace(res, '=');
 		replace(res, '\"');
-		field_param(comando, res);
 		trim(res);
 		strcpy(field, res);
 		return 19;
