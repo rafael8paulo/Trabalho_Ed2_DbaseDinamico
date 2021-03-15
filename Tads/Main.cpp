@@ -7,7 +7,7 @@
 #include "tad.h"
 #include "operations.h"
 #include "manipulations.h"
-#include "meuconio.h"
+#include "conio.h"
 
 int main(){
 	system("title dBase III - Estruturas de Dados II");
@@ -20,7 +20,7 @@ int main(){
 	buildUnit(&unid); //Build Unit D:
 	buildUnit(&unid); //Build Unit E:
 		
-	int opc;
+	char opc;
 	char comando_field[50];
 	char valor[50];
 	valor[0] = '\0';
@@ -49,32 +49,25 @@ int main(){
 
 			//CRIATE
 			case 2 : {
-				
-				
+					
+				//Criar DBF
 				novoArquivo(unid, valor);
-				//printf("Arquivo: |%s|\n", unid->arqs->nomeDBF); 
 				printf("Incluir dados ? <Y/N>: ");
-				//opc = toupper(getch());
-				scanf("%d", &opc);
-				printf("\n");
+				opc = toupper(getche());
 				
 				if(opc == 'Y')
-					printf("Tela\n");
-				
+				{
+					arquivo_aberto = abrirArquivo(unid, valor);
+					insertFields(arquivo_aberto);
+				}
 				break;
 			}
 			//USE
 			case 5 : {
 				
-
-				arquivo_aberto = abrirArquivo(unid, valor);
-				
-				
-				if(arquivo_aberto != NULL)
-					printf("Aberto: [%s]\n", arquivo_aberto->nomeDBF);
-				else
-					printf("Not found\n");
-					
+				arquivo_aberto = NULL;
+				trocaUnidade(&unid, toupper(valor[0]));
+				printf("Diretorio atual: [%c:]\n", unid->letter);
 				break;
 			}
 			//LIST
@@ -93,9 +86,6 @@ int main(){
 			default :
 				printf("Comando Invalido\n");
 		}
-		
-		/*printf("comando_field [%s]\n", comando_field);
-		printf("valor [%s]\n", valor);*/
 		
 		printf(". ");
 		fflush(stdin);
