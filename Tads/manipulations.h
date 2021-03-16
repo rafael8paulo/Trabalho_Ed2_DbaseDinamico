@@ -1,3 +1,18 @@
+/*struct posicoes
+{
+	unsigned int y;
+};
+typedef struct posicoes Posicoes;
+*/
+struct field
+{
+	char nome[50];
+	char tipo; 
+	int largura;
+	int dec;
+};
+typedef struct field Entradas;
+
 int trocaUnidade (Dir **unid, char letra)
 {
 	/*
@@ -49,4 +64,57 @@ Arq *abrirArquivo (Dir *unid, const char *nomeArq)
 		aux = aux->prox;
 		
 	return aux;
+}
+
+void insertFields(Arq *arq)
+{
+	Entradas in;
+	int i = 1;
+	show();
+	printf("  %d  ", i);
+	fflush(stdin);
+	gets(in.nome);
+	
+	while(stricmp(in.nome, "\0"))
+	{
+		gotoxy(17, i + 2); in.tipo = getche();
+		fflush(stdin);
+		gotoxy(25, i + 2); scanf("%d", &in.largura);
+		fflush(stdin);
+		gotoxy(33, i + 2); scanf("%d", &in.dec);
+		i++;
+		
+		createNewField(arq, in.nome, toupper(in.tipo), in.largura, in.dec);
+		
+		printf("  %d  ", i);
+		fflush(stdin);
+		gets(in.nome);
+	}
+	system("cls");
+}
+
+void listarFields(Arq *arq, Dir *uni)
+{
+	if(arq != NULL)
+	{
+		Campos *f = arq->cmps;
+		int i = 1;
+		system("cls");
+		printf("Structure for database: %c:%s\n", uni->letter, arq->nomeDBF);
+		printf("Field	Field Name		Type	Width	Dec\n");
+		while(f != NULL)
+		{
+			gotoxy(3, i + 2); printf("  %d  ", i);
+			gotoxy(9, i + 2); printf("%s", f->fieldName);
+			gotoxy(33, i + 2); printf("%c", f->type);
+			gotoxy(41, i + 2); printf("%d", f->width);
+			gotoxy(49, i + 2); printf("%d", f->dec);
+			f = f->prox;
+			i++;
+		}
+		printf("\n");
+	}
+}
+void operations(){
+	
 }

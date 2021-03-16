@@ -3,13 +3,38 @@
 #include <string.h> //strcpy()
 #include <time.h> //time(), localtime();
 #include <ctype.h>
+#include <conio.h>
+#include "meuconio.h"
+#include "display.h"
 #include "tad_comandos.h"
 #include "tad.h"
 #include "operations.h"
 #include "manipulations.h"
-#include "conio.h"
+
+
 
 int main(){
+	system("title dBase III - Estruturas de Dados II");
+	
+	Dir *unid;
+	Arq *arquivo_aberto;
+	initDir(&unid); //Initializing
+	
+	buildUnit(&unid); //Build Unit C:
+	
+	arquivo_aberto = createNewDBF(unid, "CLIENTES.dbf");
+	
+	arquivo_aberto->cmps = createNewField(arquivo_aberto, "CODIGO", 'N', 8, 0);
+	arquivo_aberto->cmps = createNewField(arquivo_aberto, "NOME", 'C', 20, 0);
+	
+	append(&arquivo_aberto);
+	
+	exibir(arquivo_aberto);
+	
+	return 0;
+}
+
+/*int main(){
 	system("title dBase III - Estruturas de Dados II");
 	
 	Dir *unid;
@@ -20,7 +45,7 @@ int main(){
 	buildUnit(&unid); //Build Unit D:
 	buildUnit(&unid); //Build Unit E:
 		
-	char opc;
+	int opc;
 	char comando_field[50];
 	char valor[50];
 	valor[0] = '\0';
@@ -38,8 +63,6 @@ int main(){
 
 			//SET DEFAULT TO
 			case 1 : {
-				
-				
 				//system("cls"); //Goto
 				trocaUnidade(&unid, toupper(valor[0]));
 				//printf("Letra atual: %c\n", unid->letter); //Goto
@@ -47,7 +70,7 @@ int main(){
 				break;
 			}
 
-			//CRIATE
+			//CREATE
 			case 2 : {
 					
 				//Criar DBF
@@ -62,12 +85,27 @@ int main(){
 				}
 				break;
 			}
+			//DIR
+			case 3 : {
+				listaArquivo(unid);
+				break;
+			}
 			//USE
 			case 5 : {
 				
 				arquivo_aberto = NULL;
 				trocaUnidade(&unid, toupper(valor[0]));
 				printf("Diretorio atual: [%c:]\n", unid->letter);
+				break;
+			}
+			//LIS STRUCTURE
+			case 6: {
+				listarFields(arquivo_aberto, unid);
+				break;
+			}
+			//APPEND
+			case 7: {
+				append(&arquivo_aberto);
 				break;
 			}
 			//LIST
@@ -94,4 +132,4 @@ int main(){
 	}
 	
 	return 0;
-}
+}*/

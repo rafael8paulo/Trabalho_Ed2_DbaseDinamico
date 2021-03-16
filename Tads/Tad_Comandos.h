@@ -202,3 +202,6 @@ int Compara_String(char comando[], char field[])
 
 	return 0; //Nenhuma das opcoes
 }
+void append(){
+	
+}

@@ -1,5 +1,28 @@
 //TAD Manipulacoes
 
+void exibir(Arq *arquivo_aberto){
+	
+	Campos *aux = arquivo_aberto->cmps;
+	pDados *auxp = aux->p_dados;
+	
+	while(aux != NULL){
+		printf("\n ------ %s ------ \n", aux->fieldName);
+		auxp = aux->p_dados;
+		while(auxp != NULL){
+			
+			if(aux->type == 'N')
+				printf(" - %.2f \n", auxp->valor.valorN);
+				
+			if(aux->type == 'C')
+				printf(" - %s \n", auxp->valor.valorC);
+			
+			auxp = auxp->prox;
+		}
+		aux = aux->prox;
+	}
+	
+}
+
 void initDir(Dir **uni)
 {
 	*uni = NULL;
@@ -57,7 +80,6 @@ Arq *createNewDBF (Dir *uni, char name[]) //nao necessario passagem por referenc
 	getDate(date);
 	getHour(hour);
 	
-	
 	//Arq *aux = (*uni)->arqs;
 	Arq *aux; //= (*uni)->arqs;
 	Arq *newDBF = (Arq*) malloc (sizeof(Arq));
@@ -86,12 +108,13 @@ Arq *createNewDBF (Dir *uni, char name[]) //nao necessario passagem por referenc
 		newDBF->ant = aux;
 		aux->prox = newDBF;
 	}
+	
 	return newDBF;
 }
 
 
 //Recebe o ponteiro onde o arquivo DBF esta aberto
-void createNewField (Arq *open_file, char name[], char type, int width, int dec)
+Campos *createNewField (Arq *open_file, char name[], char type, int width, int dec)
 {
 	Campos *aux;
 	Campos *newField = (Campos*) malloc (sizeof(Campos));
@@ -104,20 +127,19 @@ void createNewField (Arq *open_file, char name[], char type, int width, int dec)
 	newField->p_dados = NULL;
 	newField->prox = NULL;
 	
-	if (open_file->cmps == NULL)
-	{
-		open_file->cmps = newField;
-	}
-	else
-	{
+	if (open_file->cmps == NULL){	
+		open_file->cmps = newField;	
+		
+	}else{
 		aux = open_file->cmps;
+		
 		while(aux->prox != NULL)
 			aux = aux->prox;
 		
 		aux->prox = newField;
 	}
+	return open_file->cmps;
 }
-
 
 void createNewStatus (Arq *open_file)
 {
@@ -190,4 +212,57 @@ void createNewCell (Campos *open_field, char info[])
 			
 		aux->prox = reg;
 	}
+}
+pDados *CriarpDados(char tp){
+	
+	char info[50];
+	
+	pDados *nPdados = (pDados*) malloc(sizeof(pDados));
+	nPdados->prox = NULL;
+	
+	printf("\n#");
+	fflush(stdin);
+	gets(info);
+
+	if(toupper(tp) == 'N'){
+		nPdados->valor.valorN = strtof(info, NULL);
+	}else if(toupper(tp) == 'D'){
+		
+		strcpy(nPdados->valor.valorD, info);
+		
+	}else if(toupper(tp) == 'L'){
+		
+		nPdados->valor.valorL = info[0];
+		
+	}else if(toupper(tp) == 'C'){
+		
+		strcpy(nPdados->valor.valorC, info);
+		
+	}else if(toupper(tp) == 'M'){
+		strcpy(nPdados->valor.valorM, info);
+	}
+	
+	return nPdados;	
+}
+void append(Arq **Atual){
+	
+	pDados *nPdados = (pDados*) malloc(sizeof(pDados));
+	
+	Campos *C = (*Atual)->cmps;
+	
+	while(C != NULL){
+		nPdados = CriarpDados(C->type);
+		
+		if(C->p_dados == NULL){
+			C->p_dados = nPdados;
+		}else{
+			pDados *P = C->p_dados;
+			while(P->prox != NULL)
+				P = P->prox;
+				
+			P->prox = nPdados;
+		}
+		C = C->prox;
+	}
+	
 }
