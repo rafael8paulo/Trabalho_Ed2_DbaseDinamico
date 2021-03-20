@@ -1,26 +1,45 @@
 //TAD Manipulacoes
-
-void exibir(Arq *arquivo_aberto){
+int indexOf(char str[], char subs[])
+{
+	int flag = 0;
+	char auxStr[50];
+	char auxSubs[50];
 	
-	Campos *aux = arquivo_aberto->cmps;
-	pDados *auxp = aux->p_dados;
+	strcpy(auxStr, str); 
+	strcpy(auxSubs, subs); 
 	
-	while(aux != NULL){
-		printf("\n ------ %s ------ \n", aux->fieldName);
-		auxp = aux->p_dados;
-		while(auxp != NULL){
+	int x;
+	int y = 0;
+	int i = 0;
+	int pos = -1;
+	
+	if (str[0] == '\0' || subs[0] == '\0' || strlen(subs) > strlen(str))
+		return -1;
+		
+	
+	while (str[i] != '\0' && !flag)
+	{
+		if(str[i] == subs[0])
+		{
+			flag = 1;
+			x = i; 
+			y = 0; 
 			
-			if(aux->type == 'N')
-				printf(" - %.2f \n", auxp->valor.valorN);
-				
-			if(aux->type == 'C')
-				printf(" - %s \n", auxp->valor.valorC);
+			while (auxStr[x] != '\0' && auxSubs[y] != '\0' && flag)
+			{
+				flag = auxStr[x] != auxSubs[y] ? 0 : 1;
 			
-			auxp = auxp->prox;
+				x++; 
+				y++; 
+			}
 		}
-		aux = aux->prox;
+		pos++;
+		i++;
 	}
 	
+	if(auxSubs[y] == '\0' && flag == 1)
+		return pos;
+	return -1;
 }
 
 void initDir(Dir **uni)
@@ -71,7 +90,7 @@ void buildUnit(Dir **uni)
 	}
 }
 
-//Apos criado, o arquivo.DBF Ã© aberto, para insercoes de dados
+//Apos criado, o arquivo.DBF é aberto, para insercoes de dados
 Arq *createNewDBF (Dir *uni, char name[]) //nao necessario passagem por referencia
 {
 	char date[9];
@@ -79,6 +98,7 @@ Arq *createNewDBF (Dir *uni, char name[]) //nao necessario passagem por referenc
 	
 	getDate(date);
 	getHour(hour);
+	
 	
 	//Arq *aux = (*uni)->arqs;
 	Arq *aux; //= (*uni)->arqs;
@@ -108,38 +128,38 @@ Arq *createNewDBF (Dir *uni, char name[]) //nao necessario passagem por referenc
 		newDBF->ant = aux;
 		aux->prox = newDBF;
 	}
-	
 	return newDBF;
 }
 
 
 //Recebe o ponteiro onde o arquivo DBF esta aberto
-Campos *createNewField (Arq *open_file, char name[], char type, int width, int dec)
+void createNewField (Arq *open_file, char name[], char type, int width, int dec)
 {
 	Campos *aux;
 	Campos *newField = (Campos*) malloc (sizeof(Campos));
 	
 	newField->pAtual = NULL;
 	strcpy(newField->fieldName, name);
-	newField->type = type;
+	newField->type = toupper(type);
 	newField->width = width;
 	newField->dec = dec;
 	newField->p_dados = NULL;
 	newField->prox = NULL;
 	
-	if (open_file->cmps == NULL){	
-		open_file->cmps = newField;	
-		
-	}else{
+	if (open_file->cmps == NULL)
+	{
+		open_file->cmps = newField;
+	}
+	else
+	{
 		aux = open_file->cmps;
-		
 		while(aux->prox != NULL)
 			aux = aux->prox;
 		
 		aux->prox = newField;
 	}
-	return open_file->cmps;
 }
+
 
 void createNewStatus (Arq *open_file)
 {
@@ -213,56 +233,108 @@ void createNewCell (Campos *open_field, char info[])
 		aux->prox = reg;
 	}
 }
-pDados *CriarpDados(char tp){
+//Novo
+Campos *Busca_Campos(Campos *Inicio, char valor[]){
 	
-	char info[50];
-	
-	pDados *nPdados = (pDados*) malloc(sizeof(pDados));
-	nPdados->prox = NULL;
-	
-	printf("\n#");
-	fflush(stdin);
-	gets(info);
-
-	if(toupper(tp) == 'N'){
-		nPdados->valor.valorN = strtof(info, NULL);
-	}else if(toupper(tp) == 'D'){
+	while(Inicio != NULL && stricmp(Inicio->fieldName, valor)!=0)
+		Inicio = Inicio->prox;
 		
-		strcpy(nPdados->valor.valorD, info);
-		
-	}else if(toupper(tp) == 'L'){
-		
-		nPdados->valor.valorL = info[0];
-		
-	}else if(toupper(tp) == 'C'){
-		
-		strcpy(nPdados->valor.valorC, info);
-		
-	}else if(toupper(tp) == 'M'){
-		strcpy(nPdados->valor.valorM, info);
-	}
-	
-	return nPdados;	
+	return Inicio;
 }
-void append(Arq **Atual){
+void Busca_ValorC(pDados *Inicio, char valor[], Status *s){
 	
-	pDados *nPdados = (pDados*) malloc(sizeof(pDados));
+	int i=0;
 	
-	Campos *C = (*Atual)->cmps;
-	
-	while(C != NULL){
-		nPdados = CriarpDados(C->type);
-		
-		if(C->p_dados == NULL){
-			C->p_dados = nPdados;
-		}else{
-			pDados *P = C->p_dados;
-			while(P->prox != NULL)
-				P = P->prox;
-				
-			P->prox = nPdados;
+	while(Inicio != NULL){
+		if(stricmp(Inicio->valor.valorC, valor)==0 && s->status == 1){
+			printf("\nRecord = %d", i+1);
 		}
-		C = C->prox;
+		Inicio =  Inicio->prox;
+		s = s->prox;
+		i++;
 	}
+	if(i == 0)
+		printf("\nElemento nao encontrado!");
+}
+void Busca_ValorN(pDados *Inicio, char v[], Status *s){
+	int i=0, valor = atof(v);
 	
+	while(Inicio != NULL){
+		if(Inicio->valor.valorN == valor && s->status == 1){
+			printf("\nRecord = %d", i+1);
+		}
+		Inicio =  Inicio->prox;
+		s = s->prox;
+		i++;
+	}
+	if(i == 0)
+		printf("\nElemento nao encontrado!");
+}
+void Busca_ValorD(pDados *Inicio, char valor[], Status *s){
+	int i=0;
+	
+	while(Inicio != NULL){
+		if(stricmp(Inicio->valor.valorD, valor)==0 && s->status){
+			printf("\nRecord = %d", i+1);
+		}
+		Inicio =  Inicio->prox;
+		s = s->prox;
+		i++;
+	}
+	if(i == 0)
+		printf("\nElemento nao encontrado!");
+}
+void Busca_ValorL(pDados *Inicio, char valor[], Status *s){
+	int i=0;
+	
+	while(Inicio != NULL){
+		if(Inicio->valor.valorL == valor[0] && s->status){
+			printf("\nRecord = %d", i+1);
+		}
+		Inicio =  Inicio->prox;
+		s = s->prox;
+		i++;
+	}
+	if(i == 0)
+		printf("\nElemento nao encontrado!");
+}
+void Busca_ValorM(pDados *Inicio, char valor[], Status *s){
+	int i=0;
+	
+	while(Inicio != NULL){
+		if(stricmp(Inicio->valor.valorM, valor)==0 && s->status){
+			printf("\nRecord = %d", i+1);
+		}
+		Inicio =  Inicio->prox;
+		s = s->prox;
+		i++;
+	}
+	if(i == 0)
+		printf("\nElemento nao encontrado!");
+}
+void locate(Arq *arquivo_aberto, char comando_field[], char valor[]){
+	
+	Campos *c = arquivo_aberto->cmps;
+	Campos *aux = Busca_Campos(c, comando_field);
+	int pos;
+	if(aux != NULL){
+		
+		switch(c->type){
+			case 'N':
+				Busca_ValorN(aux->p_dados, valor, arquivo_aberto->stts);
+				break;
+			case 'D':
+				Busca_ValorD(aux->p_dados, valor, arquivo_aberto->stts);
+				break;
+			case 'L':
+				Busca_ValorL(aux->p_dados, valor, arquivo_aberto->stts);
+				break;
+			case 'C':
+				Busca_ValorC(aux->p_dados, valor, arquivo_aberto->stts);
+				break;
+			case 'M':
+				Busca_ValorM(aux->p_dados, valor, arquivo_aberto->stts);
+				break;
+		}
+	}	
 }

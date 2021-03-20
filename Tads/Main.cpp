@@ -2,43 +2,29 @@
 #include <stdlib.h> //strtof();
 #include <string.h> //strcpy()
 #include <time.h> //time(), localtime();
+#include <conio2.h>
 #include <ctype.h>
-#include <conio.h>
-#include "meuconio.h"
 #include "display.h"
-#include "tad_comandos.h"
+#include "TadComandos.h"
 #include "tad.h"
 #include "operations.h"
 #include "manipulations.h"
 
+/*struct pointers {
+	
+	//unidade aberta
+	//arquivo aberto
+	//registro atual
+};*/
 
 
-int main(){
-	system("title dBase III - Estruturas de Dados II");
+int main()
+{
+	system("title dBase III - Estruturas de Dados II - Fipp - By: @rodrigueseti @rafael8paulo - github.com/rodrigueseti/dBase3");
 	
 	Dir *unid;
-	Arq *arquivo_aberto;
-	initDir(&unid); //Initializing
-	
-	buildUnit(&unid); //Build Unit C:
-	
-	arquivo_aberto = createNewDBF(unid, "CLIENTES.dbf");
-	
-	arquivo_aberto->cmps = createNewField(arquivo_aberto, "CODIGO", 'N', 8, 0);
-	arquivo_aberto->cmps = createNewField(arquivo_aberto, "NOME", 'C', 20, 0);
-	
-	append(&arquivo_aberto);
-	
-	exibir(arquivo_aberto);
-	
-	return 0;
-}
-
-/*int main(){
-	system("title dBase III - Estruturas de Dados II");
-	
-	Dir *unid;
-	Arq *arquivo_aberto;
+	Arq *arquivo_aberto = NULL;
+	Entradas en;
 	initDir(&unid); //Initializing
 	
 	buildUnit(&unid); //Build Unit C:
@@ -50,6 +36,8 @@ int main(){
 	char valor[50];
 	valor[0] = '\0';
 	
+	//show();
+	
 	printf("Diretorio atual: [%c:]\n", unid->letter);
 	printf(". ");
 	fflush(stdin);
@@ -60,67 +48,108 @@ int main(){
 	{
 		switch (opc)
 		{
-
-			//SET DEFAULT TO
-			case 1 : {
-				//system("cls"); //Goto
-				trocaUnidade(&unid, toupper(valor[0]));
-				//printf("Letra atual: %c\n", unid->letter); //Goto
-				printf("Diretorio atual: [%c:]\n", unid->letter);
+			//DIR
+			case 2 : {
+				listaArquivo(unid);
 				break;
 			}
-
+			
+			
+			//LIST
+			case 7 : {
+				list(arquivo_aberto);
+				break;
+			}
+		
+			//CLEAR
+			case 8 : {
+				system("cls");
+				break;
+			}
+			//APPEND
+			case 11 : { //*******************T*******************estar
+				append(arquivo_aberto);
+				break;
+			}
+			
+			//DELETE ALL
+			case 13 : {
+				DeleteAll(arquivo_aberto->stts);
+				printf("All deleted recordings\n");
+				break;
+			}
+			
+			//RECALL ALL
+			case 14 : {
+				RecallAll(arquivo_aberto->stts);
+				printf("All records retrieved\n");
+				break;
+			}
+			
+			//LIST STRUCTURE
+			case 16 : {
+				listarFields(arquivo_aberto, unid);
+				break;
+			}
+			
 			//CREATE
-			case 2 : {
-					
-				//Criar DBF
+			case 19 : {
+				
 				novoArquivo(unid, valor);
-				printf("Incluir dados ? <Y/N>: ");
+				printf("Incluir Fields ? (Y/N): ");
 				opc = toupper(getche());
 				
 				if(opc == 'Y')
 				{
 					arquivo_aberto = abrirArquivo(unid, valor);
 					insertFields(arquivo_aberto);
+					
+					printf("Input data records now? (Y/N)");
+					opc = toupper(getch());
+					while(opc == 'Y')
+					{
+						//Chamada
+						append(arquivo_aberto);
+						printf("Continue including? (Y/N)");
+						opc = toupper(getch());
+					}
 				}
+				printf("\n");
 				break;
 			}
-			//DIR
-			case 3 : {
-				listaArquivo(unid);
-				break;
-			}
+			
 			//USE
-			case 5 : {
+			case 20 : {
+				arquivo_aberto = abrirArquivo(unid, valor);
 				
+				//GOTO
+				if(arquivo_aberto != NULL)
+					printf("Aberto: [%s]\n", arquivo_aberto->nomeDBF);
+				else
+					printf("Not found\n");
+					
+				break;
+			}
+			
+			//SET DEFAULT TO
+			case 22 : {
 				arquivo_aberto = NULL;
 				trocaUnidade(&unid, toupper(valor[0]));
 				printf("Diretorio atual: [%c:]\n", unid->letter);
 				break;
 			}
-			//LIS STRUCTURE
-			case 6: {
-				listarFields(arquivo_aberto, unid);
-				break;
-			}
-			//APPEND
-			case 7: {
-				append(&arquivo_aberto);
-				break;
-			}
-			//LIST
-			case 8 : {
-				
-				listaArquivo(unid);
-				break;
-			}
-			//CLEAR
-			case 9 : {
-				
-				system("cls");
+			
+			//LIST FOR
+			case 23 : {
+				listFor(arquivo_aberto, comando_field, valor);
 				break;
 			}
 			
+			//LOCATE FOR
+			case 24 : {
+				locate(arquivo_aberto, comando_field, valor);
+				break;
+			}
 			default :
 				printf("Comando Invalido\n");
 		}
@@ -132,4 +161,4 @@ int main(){
 	}
 	
 	return 0;
-}*/
+}
