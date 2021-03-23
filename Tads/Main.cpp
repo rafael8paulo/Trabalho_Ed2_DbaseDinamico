@@ -17,7 +17,27 @@
 	//registro atual
 };*/
 
-
+void conta(Arq *arquivo_aberto){
+	int i=0;
+	pDados *p = arquivo_aberto->cmps->p_dados;
+	Campos *c = arquivo_aberto->cmps;
+	Status *s = arquivo_aberto->stts;
+	
+	while(s != NULL){
+		i++;
+		s = s->prox;
+	}
+	printf("\ns = %d", i);
+	i=0;
+	while(c != NULL){
+		while(p != NULL){
+			i++;
+			p = p->prox;
+		}	
+		c = c->prox;
+	}
+	printf("\np = %d", i);
+}
 int main()
 {
 	system("title dBase III - Estruturas de Dados II - Fipp - By: @rodrigueseti @rafael8paulo - github.com/rodrigueseti/dBase3");
@@ -54,6 +74,11 @@ int main()
 				break;
 			}
 			
+			//PACK
+			case 5 : {
+				pack(&arquivo_aberto);
+				break;
+			}
 			
 			//LIST
 			case 7 : {
@@ -153,7 +178,7 @@ int main()
 			default :
 				printf("Comando Invalido\n");
 		}
-		
+		conta(arquivo_aberto);
 		printf(". ");
 		fflush(stdin);
 		gets(comando_field);

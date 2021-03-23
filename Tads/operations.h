@@ -159,8 +159,6 @@ void createNewField (Arq *open_file, char name[], char type, int width, int dec)
 		aux->prox = newField;
 	}
 }
-
-
 void createNewStatus (Arq *open_file)
 {
 	Status *aux;
@@ -233,7 +231,7 @@ void createNewCell (Campos *open_field, char info[])
 		aux->prox = reg;
 	}
 }
-//Novo
+//LOCATE FOR 
 Campos *Busca_Campos(Campos *Inicio, char valor[]){
 	
 	while(Inicio != NULL && stricmp(Inicio->fieldName, valor)!=0)
@@ -337,4 +335,58 @@ void locate(Arq *arquivo_aberto, char comando_field[], char valor[]){
 				break;
 		}
 	}	
+}
+//PACK
+int remove_status(Status **status){
+	int pos = 0;
+	if((*status)->status == 0){
+		*status = (*status)->prox;
+	}else{
+		
+		Status *s = (*status), *antS;
+		
+		while(s->prox != NULL){
+			antS = s;
+			s = s->prox;
+			pos++;
+		}
+		
+		antS->prox = s->prox;
+		free(s);
+	}
+	return pos;
+}
+void remove_pDados(Campos **Campos, int pos){
+	int i=0;
+	if(pos == 0){
+		(*Campos)->p_dados = (*Campos)->p_dados->prox;
+	}else{
+		pDados *aux = (*Campos)->p_dados, *ant;
+		while(i <= pos){
+			ant = aux;
+			aux = aux->prox;
+			i++;
+		}
+		ant->prox =  aux->prox;
+	}
+}
+void pack(Arq **arquivo_aberto){
+	
+	pDados *p = (*arquivo_aberto)->cmps->p_dados, *antP;
+	Campos *c = (*arquivo_aberto)->cmps;
+	Status *s = (*arquivo_aberto)->stts;
+	
+	int pos;
+	while(s != NULL){
+		pos = remove_status(&(*arquivo_aberto)->stts);
+		s = s->prox;
+		while(c != NULL){
+			while(p != NULL){
+				remove_pDados(&c, pos);
+				p = p->prox;
+			}
+			c = c->prox;
+		}	
+	}
+	printf("\n* Elementos Excluidos *");
 }
