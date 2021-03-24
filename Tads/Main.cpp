@@ -17,27 +17,6 @@
 	//registro atual
 };*/
 
-void conta(Arq *arquivo_aberto){
-	int i=0;
-	pDados *p = arquivo_aberto->cmps->p_dados;
-	Campos *c = arquivo_aberto->cmps;
-	Status *s = arquivo_aberto->stts;
-	
-	while(s != NULL){
-		i++;
-		s = s->prox;
-	}
-	printf("\ns = %d", i);
-	i=0;
-	while(c != NULL){
-		while(p != NULL){
-			i++;
-			p = p->prox;
-		}	
-		c = c->prox;
-	}
-	printf("\np = %d", i);
-}
 int main()
 {
 	system("title dBase III - Estruturas de Dados II - Fipp - By: @rodrigueseti @rafael8paulo - github.com/rodrigueseti/dBase3");
@@ -71,6 +50,12 @@ int main()
 			//DIR
 			case 2 : {
 				listaArquivo(unid);
+				break;
+			}
+			
+			//DIR
+			case 4 : {
+				edit(&arquivo_aberto);
 				break;
 			}
 			
@@ -155,7 +140,12 @@ int main()
 					
 				break;
 			}
-			
+			//GOTO
+			case 21 : {
+				//printf("\n goto = %s", valor);
+				goto_(&arquivo_aberto, valor);
+				break;
+			}
 			//SET DEFAULT TO
 			case 22 : {
 				arquivo_aberto = NULL;
@@ -169,7 +159,6 @@ int main()
 				listFor(arquivo_aberto, comando_field, valor);
 				break;
 			}
-			
 			//LOCATE FOR
 			case 24 : {
 				locate(arquivo_aberto, comando_field, valor);
@@ -178,7 +167,6 @@ int main()
 			default :
 				printf("Comando Invalido\n");
 		}
-		conta(arquivo_aberto);
 		printf(". ");
 		fflush(stdin);
 		gets(comando_field);

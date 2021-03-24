@@ -390,3 +390,70 @@ void pack(Arq **arquivo_aberto){
 	}
 	printf("\n* Elementos Excluidos *");
 }
+//GOTO 
+int goto_(Arq **arquivo_aberto, char vl[]){
+	int i;
+	Campos *c = (*arquivo_aberto)->cmps;
+	pDados *p = (*arquivo_aberto)->cmps->p_dados, *aux;
+
+	int pos = atoi(vl) - 1;
+	
+	while(c != NULL){
+		
+		aux = c->p_dados;
+		i=0;
+		
+		while(i < pos){
+			i++;
+			aux = aux->prox;
+		}
+		
+		if(aux != NULL){
+			c->pAtual = aux;
+		}else{
+			printf("\nRegistro nao existe!\n");
+		}
+		
+		c = c->prox;
+	}
+}
+//Edit
+void edit(Arq **arquivo_aberto){
+	
+	char aux[50];
+	Campos *c = (*arquivo_aberto)->cmps;
+	
+	system("cls");
+	while(c != NULL){
+		
+		printf("\n %s\t", c->fieldName);
+		fflush(stdin);
+		gets(aux);
+		
+		switch (c->type)
+		{
+			case 'N' :{
+				c->pAtual->valor.valorN = atof(aux);
+				break;
+			}
+			case 'D' :{
+				strcpy(c->pAtual->valor.valorD, aux);
+				break;
+			}
+			case 'L' :{
+				c->pAtual->valor.valorL = aux[0];
+				break;
+			}
+			case 'C' :{
+				strcpy(c->pAtual->valor.valorC, aux);
+				break;
+			}
+			case 'M' :{
+				strcpy(c->pAtual->valor.valorM, aux);
+				break;
+			}
+		}
+		c = c->prox;
+	}
+	
+}
