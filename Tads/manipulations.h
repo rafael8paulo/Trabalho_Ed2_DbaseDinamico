@@ -4,6 +4,7 @@
 };
 typedef struct posicoes Posicoes;
 */
+int setdel_onoff = 0;
 struct field
 {
 	char nome[50];
@@ -162,7 +163,7 @@ int getRegSize(Status *stts)
 
 void list (Arq *arq) { //Ok
 	
-	if(arq != NULL && arq->stts != NULL && getRegSize(arq->stts)) //Ok
+	if(arq != NULL && arq->stts != NULL &&  (setdel_onoff || getRegSize(arq->stts)))  //Ok
 	{
 		int i = 1;
 		Status *posStts = arq->stts;
@@ -184,7 +185,7 @@ void list (Arq *arq) { //Ok
 			flag = 1; //Inutil
 			while(auxCmps != NULL)
 			{
-				if(/*SET DELETED off/on*/ 0 || posStts->status)
+				if(setdel_onoff || posStts->status)
 				{
 					if(flag) //Inutil
 					{
@@ -225,29 +226,14 @@ void list (Arq *arq) { //Ok
 			posStts = posStts->prox;
 			auxCmps = arq->cmps;
 		}
-		//Retornar pAtual posStts para primeira posicao valida (nao marcada para exclusao).
-		
-		/*struct pointers {
-			//unidade aberta
-			//arquivo aberto
-			//registro atual
-		};*/
-		
+
 		posStts = arq->stts;
 		while(auxCmps != NULL)
 		{
 			auxCmps->pAtual = auxCmps->p_dados;
-			while(posStts != NULL  && posStts->status == 0)
-			{
-				auxCmps->pAtual = auxCmps->pAtual->prox;
-				posStts = posStts->prox;
-			}
 			auxCmps = auxCmps->prox;
-			if(auxCmps == NULL)
-				posStts = arq->stts;
 		}
 		auxCmps = arq->cmps;
-		//printf("\n");
 	}
 }
 

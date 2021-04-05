@@ -456,4 +456,48 @@ void edit(Arq **arquivo_aberto){
 		c = c->prox;
 	}
 	
-}
+}	
+void list2(Arq *arquivo_aberto){
+	
+	Status *posStts = arquivo_aberto->stts;
+	Campos *auxCmps = arquivo_aberto->cmps;
+	pDados *p = arquivo_aberto->cmps->p_dados;
+	
+	while(posStts != NULL) //ou posStts != NULL
+	{ 
+	    while(auxCmps != NULL)
+	    {
+			while(p != NULL)
+			{
+				switch(auxCmps->type)
+		        {
+		            case 'N' : {
+		                printf("%.2f			", auxCmps->p_dados->valor.valorN);
+		                break;
+		            }
+		            
+		            case 'L' : {
+		                printf("%c			", auxCmps->p_dados->valor.valorL);
+		                break;
+		            }
+		            
+		            case 'D' : {
+		                printf("%s			", auxCmps->p_dados->valor.valorD);
+		                break;
+		            }
+		            case 'C' : {
+		                printf("%s			", auxCmps->p_dados->valor.valorC);
+		                break;
+		            }
+		            case 'M' : {
+		                printf("%s		", auxCmps->p_dados->valor.valorM);
+		                break;
+		            }
+		    	}
+				p = p->prox;	
+			}
+			auxCmps = auxCmps->prox;
+	    }
+	    posStts = posStts->prox;
+	}	
+}	
