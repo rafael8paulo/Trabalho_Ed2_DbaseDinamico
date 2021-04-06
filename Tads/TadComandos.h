@@ -94,6 +94,7 @@ int Compara_String(char comando_field[], char valor[])
 	const char locate[] = "LOCATE FOR";
 	const char list_nome[] = "LIST FOR";
 	const char setdef[] = "SET DEFAULT TO";
+	const char setdel[] = "SET DELETED";
 	
 	trim(comando_field);
 	
@@ -139,14 +140,8 @@ int Compara_String(char comando_field[], char valor[])
 	if(!stricmp(comando_field, "RECALL ALL")) //Ok
 		return 14;
 	
-	if(!stricmp(comando_field, "SET DELETED ON")) //Ok
-		return 15;
-	
 	if(!stricmp(comando_field, "LIST STRUCTURE")) //Ok
 		return 16;
-		
-	if(!stricmp(comando_field, "SET DELETED OFF")) //Ok
-		return 17;
 	
 	if(!stricmp(comando_field, "MODIFY STRUCTURE")) //Ok
 		return 18;
@@ -196,5 +191,12 @@ int Compara_String(char comando_field[], char valor[])
 		strcpy(valor, res);
 		return 24;
 	}
+	//SET DELETED 
+	if(SeparaComando(comando_field, setdel, res))
+    {
+        strcpy(valor, res);
+        return 25;
+    }
+    
 	return 0; //Nenhuma das opcoes
 }
