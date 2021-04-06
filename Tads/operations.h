@@ -337,24 +337,21 @@ void locate(Arq *arquivo_aberto, char comando_field[], char valor[]){
 	}	
 }
 //PACK
-int remove_status(Status **status){
-	int pos = 0;
-	if((*status)->status == 0){
+void remove_status(Status **status,  int pos){
+	int i=0;
+	if(pos == 0){
 		*status = (*status)->prox;
 	}else{
+		Status *aux = *status, *ant;
 		
-		Status *s = (*status), *antS;
-		
-		while(s->prox != NULL){
-			antS = s;
-			s = s->prox;
-			pos++;
+		while(i < pos){
+			printf("\naqui");
+			ant = aux;
+			aux = aux->prox;
+			i++;
 		}
-		
-		antS->prox = s->prox;
-		free(s);
+		ant->prox =  aux->prox;
 	}
-	return pos;
 }
 void remove_pDados(Campos **Campos, int pos){
 	int i=0;
@@ -362,7 +359,8 @@ void remove_pDados(Campos **Campos, int pos){
 		(*Campos)->p_dados = (*Campos)->p_dados->prox;
 	}else{
 		pDados *aux = (*Campos)->p_dados, *ant;
-		while(i <= pos){
+		
+		while(i < pos){
 			ant = aux;
 			aux = aux->prox;
 			i++;
@@ -376,17 +374,29 @@ void pack(Arq **arquivo_aberto){
 	Campos *c = (*arquivo_aberto)->cmps;
 	Status *s = (*arquivo_aberto)->stts;
 	
-	int pos;
+	int pos = 0, vet[100], TL = 0, i=0;
+	
 	while(s != NULL){
-		pos = remove_status(&(*arquivo_aberto)->stts);
-		s = s->prox;
-		while(c != NULL){
-			while(p != NULL){
-				remove_pDados(&c, pos);
-				p = p->prox;
-			}
-			c = c->prox;
+		if(s->status == 0){
+			vet[TL] = i;
+			TL++;
 		}	
+		i++;
+		s = s->prox;
+	}
+	//Remover da coluna status
+	s = (*arquivo_aberto)->stts;
+	for(i = 0; i<TL;i++){
+			pos = vet[i];
+			remove_status(&s, pos);
+	}
+	//Remover pDados
+	while(c != NULL){
+		for(i = 0; i<TL;i++){
+			pos = vet[i];
+			remove_pDados(&c, pos);
+		}
+		c = c->prox;
 	}
 	printf("\n* Elementos Excluidos *");
 }

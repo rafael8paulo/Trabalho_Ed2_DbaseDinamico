@@ -13,7 +13,20 @@ struct field
 	int dec;
 };
 typedef struct field Entradas;
-
+void set_delete(char valor[])
+{
+    if(!stricmp("on", valor))
+    {
+        setdel_onoff = 0;
+        printf("set deleted 0\n");
+    }
+    else if(!stricmp("off", valor))
+    {
+        setdel_onoff = 1;
+        printf("set deleted 1\n");
+    }
+    else printf("Comando Invalido\n");
+}
 int trocaUnidade (Dir **unid, char letra)
 {
 	/*
@@ -163,77 +176,70 @@ int getRegSize(Status *stts)
 
 void list (Arq *arq) { //Ok
 	
-	if(arq != NULL && arq->stts != NULL &&  (setdel_onoff || getRegSize(arq->stts)))  //Ok
+	system("cls");
+	
+	int i = 0, x = 25, y = 2;
+	Status *posStts = arq->stts;
+	Campos *auxCmps = arq->cmps;
+	pDados *auxP;
+	
+	printf("Record#			");
+	while (auxCmps != NULL)
 	{
-		int i = 1;
-		Status *posStts = arq->stts;
-		Campos *auxCmps = arq->cmps;
-		unsigned char flag; //Inutil
-		
-		
-		printf("Record#			");
-		while (auxCmps != NULL)
-		{
-			printf("%s			", auxCmps->fieldName); 
-			auxCmps = auxCmps->prox;
-		}
-		printf("\n");
-		auxCmps = arq->cmps;
-		
-		while(posStts != NULL) //ou posStts != NULL
-		{
-			flag = 1; //Inutil
-			while(auxCmps != NULL)
-			{
-				if(setdel_onoff || posStts->status)
+		printf("%s			", auxCmps->fieldName); 
+		auxCmps = auxCmps->prox;
+	}
+	
+	auxCmps = arq->cmps;
+	while(auxCmps != NULL){
+		auxP = auxCmps->p_dados;
+		posStts = arq->stts;
+		while(auxP != NULL)	{
+			if(setdel_onoff || posStts->status){
+				switch(auxCmps->type)
 				{
-					if(flag) //Inutil
-					{
-						printf("%d			", i++);
-						flag = 0;
+					case 'N' : {
+						gotoxy(x, y++); printf("%.2f			", auxP->valor.valorN);
+						break;
 					}
 					
-					switch(auxCmps->type)
-					{
-						case 'N' : {
-							printf("%.2f			", auxCmps->pAtual->valor.valorN);
-							break;
-						}
-						
-						case 'L' : {
-							printf("%c			", auxCmps->pAtual->valor.valorL);
-							break;
-						}
-						
-						case 'D' : {
-							printf("%s			", auxCmps->pAtual->valor.valorD);
-							break;
-						}
-						case 'C' : {
-							printf("%s			", auxCmps->pAtual->valor.valorC);
-							break;
-						}
-						case 'M' : {
-							printf("%s		", auxCmps->pAtual->valor.valorM);
-							break;
-						}
+					case 'L' : {
+						gotoxy(x, y++); printf("%c			", auxP->valor.valorL);
+						break;
+					}
+					
+					case 'D' : {
+						gotoxy(x, y++); printf("%s			", auxP->valor.valorD);
+						break;
+					}
+					case 'C' : {
+						gotoxy(x, y++); printf("%s			", auxP->valor.valorC);
+						break;
+					}
+					case 'M' : {
+						gotoxy(x, y++); printf("%s		", auxP->valor.valorM);
+						break;
 					}
 				}
-				auxCmps->pAtual = auxCmps->pAtual->prox;
-				auxCmps = auxCmps->prox;
 			}
-			printf("\n");
+			auxP = auxP->prox;
 			posStts = posStts->prox;
-			auxCmps = arq->cmps;
 		}
+		y = 2;
+		x = x + 25;
+		auxCmps = auxCmps->prox;
+	}
 
-		posStts = arq->stts;
-		while(auxCmps != NULL)
+	auxP =  arq->cmps->p_dados;
+	posStts = arq->stts;
+	y = 2;
+	while(posStts != NULL){
+		if(setdel_onoff || posStts->status)
 		{
-			auxCmps->pAtual = auxCmps->p_dados;
-			auxCmps = auxCmps->prox;
+			gotoxy(5, y++); printf(" %d ", i+1);
 		}
-		auxCmps = arq->cmps;
+		i++;
+		posStts = posStts->prox;
 	}
 }
 
@@ -403,5 +409,38 @@ void RecallAll(Status *s)
 	if(s != NULL) {
 		RecallAll(s->prox);
 		s->status = 1;
+	}
+}
+void Delete(Arq **arquivo_aberto, int id){
+	int i=0;
+	Status *s =  (*arquivo_aberto)->stts;
+	
+	while(s != NULL && i < id){
+		i++;
+		s = s->prox;
+	}
+	
+	if(s != NULL){
+		s->status = 0;
+		printf("\n %d record deleted", i+1);
+	}else{
+		printf("\n does not exist");
+	}
+		
+}
+void recall(Arq **arquivo_aberto, int id){
+	int i=0;
+	Status *s =  (*arquivo_aberto)->stts;
+	
+	while(s != NULL && i < id){
+		i++;
+		s = s->prox;
+	}
+	
+	if(s != NULL){
+		s->status = 1;
+		printf("\n %d record recalled", i+1);
+	}else{
+		printf("\n does not exist");
 	}
 }

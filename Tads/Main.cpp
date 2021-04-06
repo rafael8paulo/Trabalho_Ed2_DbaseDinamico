@@ -10,34 +10,7 @@
 #include "operations.h"
 #include "manipulations.h"
 
-/*struct pointers {
-	
-	//unidade aberta
-	//arquivo aberto
-	//registro atual
-};*/
 
-void conta(Arq *arquivo_aberto){
-	int i=0;
-	pDados *p = arquivo_aberto->cmps->p_dados;
-	Campos *c = arquivo_aberto->cmps;
-	Status *s = arquivo_aberto->stts;
-	
-	while(s != NULL){
-		i++;
-		s = s->prox;
-	}
-	printf("\ns = %d", i);
-	i=0;
-	while(c != NULL){
-		while(p != NULL){
-			i++;
-			p = p->prox;
-		}	
-		c = c->prox;
-	}
-	printf("\np = %d", i);
-}
 int main()
 {
 	system("title dBase III - Estruturas de Dados II - Fipp - By: @rodrigueseti @rafael8paulo - github.com/rodrigueseti/dBase3");
@@ -51,7 +24,7 @@ int main()
 	buildUnit(&unid); //Build Unit D:
 	buildUnit(&unid); //Build Unit E:
 		
-	int opc;
+	int opc, id;
 	char comando_field[50];
 	char valor[50];
 	valor[0] = '\0';
@@ -74,7 +47,7 @@ int main()
 				break;
 			}
 			
-			//DIR
+			//EDIT
 			case 4 : {
 				edit(&arquivo_aberto);
 				break;
@@ -95,6 +68,16 @@ int main()
 			//CLEAR
 			case 8 : {
 				system("cls");
+				break;
+			}
+			//RECALL
+			case 9 : {
+				recall(&arquivo_aberto, id);
+				break;
+			}
+			//CLEAR
+			case 10 : {
+				Delete(&arquivo_aberto, id);
 				break;
 			}
 			//APPEND
@@ -163,7 +146,7 @@ int main()
 			}
 			//GOTO
 			case 21 : {
-				//printf("\n goto = %s", valor);
+				id = atoi(valor) - 1;
 				goto_(&arquivo_aberto, valor);
 				break;
 			}
@@ -185,6 +168,11 @@ int main()
 				locate(arquivo_aberto, comando_field, valor);
 				break;
 			}
+			//SET DELETED
+			case 25 : {
+                set_delete(valor);
+                break;
+            }
 			default :
 				printf("Comando Invalido\n");
 		}
