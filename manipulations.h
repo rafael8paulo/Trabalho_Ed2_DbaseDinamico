@@ -1,9 +1,26 @@
-/*struct posicoes
-{
-	unsigned int y;
-};
-typedef struct posicoes Posicoes;
-*/
+void DesenhaBorda(){
+	int i;
+	system("cls");
+	textcolor(15);
+	clrscr();
+	gotoxy(1,1); printf("%c",201);
+    gotoxy(1,25); printf("%c",200);
+    gotoxy(80,1); printf("%c",187);
+    gotoxy(80,25); printf("%c",188);
+    
+    for(i=2; i<80; i++)
+    {
+        gotoxy(i,1); printf("%c",205);
+        gotoxy(i,25); printf("%c",205);
+    }
+
+    for(i=2; i<25; i++)
+    {
+        gotoxy(1,i); printf("%c",186);
+        gotoxy(80,i); printf("%c",186);
+    }
+}
+
 int setdel_onoff = 0;
 struct field
 {
@@ -18,21 +35,17 @@ void set_delete(char valor[])
     if(!stricmp("on", valor))
     {
         setdel_onoff = 0;
-        printf("set deleted 0\n");
+        gotoxy(25, 21); printf("set deleted 0\n");
     }
     else if(!stricmp("off", valor))
     {
         setdel_onoff = 1;
-        printf("set deleted 1\n");
+        gotoxy(25, 21); printf("set deleted 1\n");
     }
-    else printf("Comando Invalido\n");
+    //else gotoxy(25, 21); printf("Comando Invalido\n");
 }
 int trocaUnidade (Dir **unid, char letra)
 {
-	/*
-	*return 1 - successfully
-	*return 0 - unsuccessfully
-	*/
 	
 	Dir *aux = *unid;
 	while(aux->top != NULL && aux->letter != letra)
@@ -84,6 +97,7 @@ void insertFields(Arq *arq)
 {
 	Entradas in;
 	int i = 1;
+	DesenhaBorda();
 	show();
 	printf("  %d  ", i);
 	fflush(stdin);
@@ -91,11 +105,11 @@ void insertFields(Arq *arq)
 	
 	while(stricmp(in.nome, "\0"))
 	{
-		gotoxy(17, i + 2); in.tipo = getche();
+		gotoxy(17, i + 3); in.tipo = getche();
 		fflush(stdin);
-		gotoxy(25, i + 2); scanf("%d", &in.largura);
+		gotoxy(25, i + 3); scanf("%d", &in.largura);
 		fflush(stdin);
-		gotoxy(33, i + 2); scanf("%d", &in.dec);
+		gotoxy(33, i + 3); scanf("%d", &in.dec);
 		i++;
 		
 		createNewField(arq, in.nome, toupper(in.tipo), in.largura, in.dec);
@@ -105,6 +119,7 @@ void insertFields(Arq *arq)
 		gets(in.nome);
 	}
 	system("cls");
+	DesenhaBorda();
 }
 
 void listarFields(Arq *arq, Dir *uni)
@@ -132,6 +147,7 @@ void listarFields(Arq *arq, Dir *uni)
 
 void append (Arq *arq)
 {
+	int u = 2;
 	if(arq != NULL)
 	{
 		Campos *aux = arq->cmps;
@@ -139,22 +155,23 @@ void append (Arq *arq)
 		
 		if(aux != NULL) //Exibicao das Fields
 		{
-			system("cls");
+			DesenhaBorda();
 			while(aux != NULL)
 			{
-				printf("%s\n", aux->fieldName);
+				gotoxy(u, 2); printf("%s\n", aux->fieldName);
 				aux = aux->prox;
+				u = u + 15;
 			}
 			aux = arq->cmps;
 			createNewStatus(arq);
 		}
-		
-		int i = 1;
+
+		u = 2;
 		while(aux != NULL)
 		{
-			gotoxy(17, i++);
 			fflush(stdin);
-			gets(info);
+			gotoxy(u, 3); gets(info);
+			u = u + 15;
 			createNewCell(aux, info);
 			aux = aux->prox;
 		}
@@ -177,17 +194,20 @@ int getRegSize(Status *stts)
 void list (Arq *arq) { //Ok
 	
 	system("cls");
+	DesenhaBorda();
 	
-	int i = 0, x = 25, y = 2;
+	int i = 0, x = 15, y = 3, u = 3;
 	Status *posStts = arq->stts;
 	Campos *auxCmps = arq->cmps;
 	pDados *auxP;
 	
-	printf("Record#			");
+	gotoxy(u, 2); printf("Record#			");
+	u = u + 15;
 	while (auxCmps != NULL)
 	{
-		printf("%s			", auxCmps->fieldName); 
+		gotoxy(u, 2);printf("%s			", auxCmps->fieldName); 
 		auxCmps = auxCmps->prox;
+		u = u + 15;
 	}
 	
 	auxCmps = arq->cmps;
@@ -225,14 +245,14 @@ void list (Arq *arq) { //Ok
 			auxP = auxP->prox;
 			posStts = posStts->prox;
 		}
-		y = 2;
-		x = x + 25;
+		y = 3;
+		x = x + 15;
 		auxCmps = auxCmps->prox;
 	}
 
 	auxP =  arq->cmps->p_dados;
 	posStts = arq->stts;
-	y = 2;
+	y = 3;
 	while(posStts != NULL){
 		if(setdel_onoff || posStts->status)
 		{
@@ -241,6 +261,9 @@ void list (Arq *arq) { //Ok
 		i++;
 		posStts = posStts->prox;
 	}
+	gotoxy(25, 21); printf("press any key to continue");
+	getch();
+	
 }
 
 void copy_value(char str[], Campos *field)
@@ -286,7 +309,7 @@ void listFor (Arq *arq, char field[], char valor[])
 		//POSICIONA PONTEIROS
 		
 		
-		//Já verificando se Field exisite
+		//Jï¿½ verificando se Field exisite
 		while (!flag && auxCmps != NULL)
 		{
 			if(!stricmp(auxCmps->fieldName, field))
@@ -294,7 +317,7 @@ void listFor (Arq *arq, char field[], char valor[])
 			else
 				auxCmps = auxCmps->prox;
 		}
-		//Já verificando se Field exisite
+		//Jï¿½ verificando se Field exisite
 				
 		if(flag)
 		{
@@ -371,13 +394,6 @@ void listFor (Arq *arq, char field[], char valor[])
 				auxCmps = arq->cmps;
 			}
 			
-			//Retornar pAtual posStts para primeira posicao valida (nao marcada para exclusao).
-			/*struct pointers {
-				//unidade aberta
-				//arquivo aberto
-				//registro atual
-			};*/
-			
 			posStts = arq->stts;
 			while(auxCmps != NULL)
 			{
@@ -419,14 +435,12 @@ void Delete(Arq **arquivo_aberto, int id){
 		i++;
 		s = s->prox;
 	}
-	
 	if(s != NULL){
 		s->status = 0;
-		printf("\n %d record deleted", i+1);
+		gotoxy(25, 21); printf("%d record deleted", i+1);
 	}else{
-		printf("\n does not exist");
+		gotoxy(25, 21); printf("does not exist");
 	}
-		
 }
 void recall(Arq **arquivo_aberto, int id){
 	int i=0;
@@ -436,11 +450,10 @@ void recall(Arq **arquivo_aberto, int id){
 		i++;
 		s = s->prox;
 	}
-	
 	if(s != NULL){
 		s->status = 1;
-		printf("\n %d record recalled", i+1);
+		gotoxy(25, 21); printf("%d record recalled", i+1);
 	}else{
-		printf("\n does not exist");
+		gotoxy(25, 21); printf("does not exist");
 	}
 }

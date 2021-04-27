@@ -4,12 +4,48 @@
 #include <time.h> //time(), localtime();
 #include <conio2.h>
 #include <ctype.h>
+#include <windows.h>
+#include <time.h>
 #include "display.h"
 #include "TadComandos.h"
 #include "tad.h"
 #include "operations.h"
 #include "manipulations.h"
 
+void display(Arq *arquivo_aberto){
+	int x = 15;
+	Campos *c =  arquivo_aberto->cmps;
+	while(c  != NULL){
+		gotoxy(x, 9); printf(" %s ", c->fieldName);
+		switch(c->type)
+		{
+            case 'N' : {
+                gotoxy(x, 10);printf("%.2f", c->p_dados->valor.valorN);
+                break;
+            }
+            
+            case 'L' : {
+                gotoxy(x, 10);printf("%c", c->p_dados->valor.valorL);
+                break;
+            }
+            
+            case 'D' : {
+                gotoxy(x, 10);printf("%s", c->p_dados->valor.valorD);
+                break;
+            }
+            case 'C' : {
+                gotoxy(x, 10);printf("%s", c->p_dados->valor.valorC);
+                break;
+            }
+            case 'M' : {
+                gotoxy(x, 10);printf("%s", c->p_dados->valor.valorM);
+                break;
+            }
+		}
+		x = x + 20;
+		c = c->prox;
+	}
+}
 
 int main()
 {
@@ -30,9 +66,9 @@ int main()
 	valor[0] = '\0';
 	
 	//show();
-	
-	printf("Diretorio atual: [%c:]\n", unid->letter);
-	printf(". ");
+	DesenhaBorda();
+	gotoxy(2, 24); printf("Diretorio atual: [%c:]\n", unid->letter);
+	gotoxy(2, 22); printf(". ");
 	fflush(stdin);
 	gets(comando_field);
 	opc = Compara_String(comando_field, valor);
@@ -86,17 +122,23 @@ int main()
 				break;
 			}
 			
+			//DISPLAY
+			case 12 : { //*******************T*******************estar
+				display(arquivo_aberto);
+				break;
+			}
+			
 			//DELETE ALL
 			case 13 : {
 				DeleteAll(arquivo_aberto->stts);
-				printf("All deleted recordings\n");
+				gotoxy(25, 21); printf("All deleted recordings\n");
 				break;
 			}
 			
 			//RECALL ALL
 			case 14 : {
 				RecallAll(arquivo_aberto->stts);
-				printf("All records retrieved\n");
+				gotoxy(25, 21); printf("All records retrieved\n");
 				break;
 			}
 			
@@ -110,7 +152,7 @@ int main()
 			case 19 : {
 				
 				novoArquivo(unid, valor);
-				printf("Incluir Fields ? (Y/N): ");
+				gotoxy(2, 2); printf("Incluir Fields ? (Y/N): ");
 				opc = toupper(getche());
 				
 				if(opc == 'Y')
@@ -118,13 +160,14 @@ int main()
 					arquivo_aberto = abrirArquivo(unid, valor);
 					insertFields(arquivo_aberto);
 					
-					printf("Input data records now? (Y/N)");
+					gotoxy(2, 2); printf("Input data records now? (Y/N)");
 					opc = toupper(getch());
 					while(opc == 'Y')
 					{
 						//Chamada
 						append(arquivo_aberto);
-						printf("Continue including? (Y/N)");
+						DesenhaBorda();
+						gotoxy(2, 2); printf("Continue including? (Y/N)");
 						opc = toupper(getch());
 					}
 				}
@@ -137,10 +180,12 @@ int main()
 				arquivo_aberto = abrirArquivo(unid, valor);
 				
 				//GOTO
-				if(arquivo_aberto != NULL)
-					printf("Aberto: [%s]\n", arquivo_aberto->nomeDBF);
-				else
-					printf("Not found\n");
+				if(arquivo_aberto != NULL){
+					gotoxy(25, 21); printf("Aberto: [%s]\n", arquivo_aberto->nomeDBF);
+				}
+				else{
+					gotoxy(25, 21); printf("Not found\n");
+				}
 					
 				break;
 			}
@@ -154,7 +199,7 @@ int main()
 			case 22 : {
 				arquivo_aberto = NULL;
 				trocaUnidade(&unid, toupper(valor[0]));
-				printf("Diretorio atual: [%c:]\n", unid->letter);
+				gotoxy(25, 21); printf("Diretorio atual: [%c:]\n", unid->letter);
 				break;
 			}
 			
@@ -174,10 +219,12 @@ int main()
                 break;
             }
 			default :
-				printf("Comando Invalido\n");
+				gotoxy(25, 21); printf("Comando Invalido\n");
 		}
-		printf("\n %s\n", arquivo_aberto->cmps->pAtual);
-		printf(". ");
+		Sleep(1000);
+		DesenhaBorda();
+		gotoxy(2, 24); printf("Diretorio atual: [%c:]\n", unid->letter);
+		gotoxy(2, 22); printf(". ");
 		fflush(stdin);
 		gets(comando_field);
 		opc = Compara_String(comando_field, valor);

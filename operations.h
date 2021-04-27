@@ -259,56 +259,56 @@ void Busca_ValorN(pDados *Inicio, char v[], Status *s){
 	
 	while(Inicio != NULL){
 		if(Inicio->valor.valorN == valor && s->status == 1){
-			printf("\nRecord = %d", i+1);
+			gotoxy(25, 21); printf("\nRecord = %d", i+1);
 		}
 		Inicio =  Inicio->prox;
 		s = s->prox;
 		i++;
 	}
 	if(i == 0)
-		printf("\nElemento nao encontrado!");
+		gotoxy(25, 21); printf("\nElemento nao encontrado!");
 }
 void Busca_ValorD(pDados *Inicio, char valor[], Status *s){
 	int i=0;
 	
 	while(Inicio != NULL){
 		if(stricmp(Inicio->valor.valorD, valor)==0 && s->status){
-			printf("\nRecord = %d", i+1);
+			gotoxy(25, 21);  printf("\nRecord = %d", i+1);
 		}
 		Inicio =  Inicio->prox;
 		s = s->prox;
 		i++;
 	}
 	if(i == 0)
-		printf("\nElemento nao encontrado!");
+		gotoxy(25, 21);  printf("\nElemento nao encontrado!");
 }
 void Busca_ValorL(pDados *Inicio, char valor[], Status *s){
 	int i=0;
 	
 	while(Inicio != NULL){
 		if(Inicio->valor.valorL == valor[0] && s->status){
-			printf("\nRecord = %d", i+1);
+			gotoxy(25, 21);  printf("\nRecord = %d", i+1);
 		}
 		Inicio =  Inicio->prox;
 		s = s->prox;
 		i++;
 	}
 	if(i == 0)
-		printf("\nElemento nao encontrado!");
+		gotoxy(25, 21); printf("\nElemento nao encontrado!");
 }
 void Busca_ValorM(pDados *Inicio, char valor[], Status *s){
 	int i=0;
 	
 	while(Inicio != NULL){
 		if(stricmp(Inicio->valor.valorM, valor)==0 && s->status){
-			printf("\nRecord = %d", i+1);
+			gotoxy(25, 21);  printf("\nRecord = %d", i+1);
 		}
 		Inicio =  Inicio->prox;
 		s = s->prox;
 		i++;
 	}
 	if(i == 0)
-		printf("\nElemento nao encontrado!");
+		gotoxy(25, 21); printf("\nElemento nao encontrado!");
 }
 void locate(Arq *arquivo_aberto, char comando_field[], char valor[]){
 	
@@ -345,7 +345,6 @@ void remove_status(Status **status,  int pos){
 		Status *aux = *status, *ant;
 		
 		while(i < pos){
-			printf("\naqui");
 			ant = aux;
 			aux = aux->prox;
 			i++;
@@ -369,7 +368,7 @@ void remove_pDados(Campos **Campos, int pos){
 	}
 }
 void pack(Arq **arquivo_aberto){
-	
+
 	pDados *p = (*arquivo_aberto)->cmps->p_dados, *antP;
 	Campos *c = (*arquivo_aberto)->cmps;
 	Status *s = (*arquivo_aberto)->stts;
@@ -398,7 +397,7 @@ void pack(Arq **arquivo_aberto){
 		}
 		c = c->prox;
 	}
-	printf("\n* Elementos Excluidos *");
+	gotoxy(25, 21); printf("\n* Elementos Excluidos *");
 }
 //GOTO 
 int goto_(Arq **arquivo_aberto, char vl[]){
@@ -421,7 +420,7 @@ int goto_(Arq **arquivo_aberto, char vl[]){
 		if(aux != NULL){
 			c->pAtual = aux;
 		}else{
-			printf("\nRegistro nao existe!\n");
+			gotoxy(25, 21); printf("\nRegistro nao existe!\n");
 		}
 		
 		c = c->prox;
