@@ -13,7 +13,7 @@
 </p>
 <div style="display: inline_block" align="center"><br> 
 <h3 align="center">
-    Estrutura da lista encadeada dinâmica
+    Estrutura das listas:
 </h3>
 <img src="https://i.ibb.co/Wz3vk2X/debase.png" alt="debase" border="0">
 </div>
